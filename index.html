@@ -122,8 +122,8 @@ const VIDEOS = [
     year:2026,
     dur:"5h 36m",
     cat:"Edits",
-    link:"https://drive.google.com/file/d/12eYLrSIsG54y8f44ts4A0JhbMbHdxwJJ/view?usp=sharing",
-    linkHD:"https://drive.google.com/file/d/12eYLrSIsG54y8f44ts4A0JhbMbHdxwJJ/view?usp=sharing"
+    link:"https://vimeo.com/1242529934",
+    linkHD:"https://drive.google.com/file/d/1jxT1E4ABzJ3J2oV26l_zmM8YdaBkNTMY/view?usp=sharing"
   }
 ];
 /* ================================================= */
@@ -148,6 +148,7 @@ const uid=getUid();
 
 function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
 function driveId(u){const m=String(u).match(/\/d\/([\w-]+)/)||String(u).match(/[?&]id=([\w-]+)/);return m?m[1]:null}
+function vimeoId(u){const m=String(u).match(/vimeo\.com\/(\d+)/);return m?m[1]:null}
 function stats(id){let s=0,n=0;for(const k in allVotes){const v=allVotes[k]&&allVotes[k][id];if(v){s+=v;n++}}return{avg:n?s/n:0,n}}
 function fmt(n){return n.toFixed(1).replace(".",",")}
 
@@ -155,13 +156,20 @@ function renderVideo(v){
   current=v;appEl.textContent="";
   const lay=el("div","layout");const main=el("div");
   const pl=el("div","player");
-  const st=el("div","stage");const id=driveId(isPatron && v.linkHD ? v.linkHD : v.link);
-  if(!id||id==="TU_ID_AQUI"){st.appendChild(el("div","msg","Este video aún no tiene un enlace de Drive válido."))}
-  else{
+  const st=el("div","stage");const url=isPatron && v.linkHD ? v.linkHD : v.link;
+  const vid=vimeoId(url);const did=driveId(url);
+  if(vid){
     const f=document.createElement("iframe");
-    f.src="https://drive.google.com/file/d/"+id+"/preview";
+    f.src="https://player.vimeo.com/video/"+vid+"?badge=0&autopause=0&player_id=0&app_id=58479";
+    f.allow="autoplay; fullscreen; picture-in-picture";f.allowFullscreen=true;
+    st.appendChild(f);st.appendChild(el("div","shield"));
+  } else if(did&&did!=="TU_ID_AQUI"){
+    const f=document.createElement("iframe");
+    f.src="https://drive.google.com/file/d/"+did+"/preview";
     f.allow="autoplay; fullscreen";f.allowFullscreen=true;
     st.appendChild(f);st.appendChild(el("div","shield"));
+  } else {
+    st.appendChild(el("div","msg","Este video aún no tiene un enlace válido."));
   }
   const ex=el("button","btn exit","Salir");ex.type="button";ex.addEventListener("click",()=>exitFull(st));st.appendChild(ex);
   pl.appendChild(st);
@@ -293,7 +301,7 @@ document.addEventListener("keydown",e=>{const k=e.key.toLowerCase();if((e.ctrlKe
   status.style.display = "none";
   btn.textContent = "Ver en 1080p en Patreon";
   btn.addEventListener("click", ()=>{
-    window.open("https://www.patreon.com/cw/GMkerepot", "_blank");
+    window.open("https://www.patreon.com/GMkerepot", "_blank");
   });
 })();
 
