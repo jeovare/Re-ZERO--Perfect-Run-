@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VAKO</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Spectral:wght@400;600&display=swap">
+<style>
+:root{
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#050409;--panel:#0e0a18;--panel2:#09070f;--text:#ece7f6;--muted:#9188ab;--head:#d9cff2;--btn:#a3122f;--line:#2a1f40;--star:#e0334f;--crimson:#c4153a;--ice:#b79cff;--flake:#6f6790;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Spectral,Georgia,"Times New Roman",serif;font-size:16px;line-height:1.55;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button{font-family:inherit}
+a{color:inherit}
+#smoke{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+#smoke i{position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(70px);opacity:.55;animation:drift 50s ease-in-out infinite alternate}
+#smoke i:nth-child(1){left:-20vmax;top:-12vmax;background:radial-gradient(circle,#3b1466,transparent 65%)}
+#smoke i:nth-child(2){right:-25vmax;top:18vh;background:radial-gradient(circle,#5a0f26,transparent 65%);animation-duration:66s}
+#smoke i:nth-child(3){left:8vw;bottom:-36vmax;background:radial-gradient(circle,#2a1050,transparent 65%);animation-duration:58s}
+@keyframes drift{to{transform:translate(8vmax,6vmax) scale(1.15)}}
+@media (prefers-reduced-motion:reduce){#smoke i{animation:none}}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.88) 100%)}
+aside .box,.player,.cm{box-shadow:0 10px 36px rgba(0,0,0,.7)}
+#snow{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+#snow i{position:absolute;top:-10px;border-radius:50%;background:var(--flake);animation:fall linear infinite}
+@keyframes fall{to{transform:translate(40px,108vh)}}
+@media (prefers-reduced-motion:reduce){#snow{display:none}}
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 20px}
+h1,h2,h3,.logo,.btn,.cat,nav button{font-family:Cinzel,Georgia,serif}
+header{display:flex;align-items:center;gap:28px;padding:20px 0;flex-wrap:wrap;border-bottom:1px solid #4a1426;margin-bottom:22px}
+.logo{text-decoration:none;display:flex;align-items:center;gap:12px;font-weight:700;font-size:1.8rem;letter-spacing:.22em;cursor:pointer;background:none;border:0;color:var(--text);padding:0}
+.logo svg{color:var(--head);flex:none}
+nav{display:flex;gap:24px;flex:1;flex-wrap:wrap}
+nav button{background:none;border:0;color:var(--text);font-weight:500;letter-spacing:.08em;cursor:pointer;padding:6px 0}
+nav button:hover{color:var(--ice)}
+.search{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:9px 16px;color:var(--text);font:inherit;min-width:220px;-webkit-user-select:text;user-select:text}
+.search:focus-visible,button:focus-visible{outline:3px solid var(--ice);outline-offset:2px}
+.strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(120px,1fr);gap:14px;overflow-x:auto;padding-bottom:6px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:30px;margin:30px auto 0;max-width:900px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+h2.sec{display:flex;align-items:center;gap:18px;font-size:1.7rem;font-weight:700;letter-spacing:.06em;margin:0 0 20px}
+h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--btn),transparent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:24px 16px}
+.card{all:unset;display:block;cursor:pointer;text-align:center}
+.card:focus-visible{outline:3px solid var(--ice);outline-offset:4px;border-radius:4px}
+.poster{position:relative;aspect-ratio:2/3;border-radius:4px;overflow:hidden;background:var(--panel);display:block;border:1px solid var(--line);transition:box-shadow .2s,border-color .2s}
+.card:hover .poster{border-color:var(--ice);box-shadow:0 0 22px -2px var(--ice)}
+.poster img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none}
+.poster .ph{height:100%;display:flex;align-items:flex-end;padding:12px;font-family:Cinzel,Georgia,serif;font-weight:700;font-size:1.1rem;color:#fff;text-align:left}
+.badge{position:absolute;top:10px;left:10px;background:var(--crimson);color:#fff;font-family:Cinzel,Georgia,serif;font-weight:700;font-size:.72rem;letter-spacing:.1em;padding:2px 9px;border-radius:2px}
+.dur{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.9));color:#fff;font-size:.82rem;padding:24px 8px 6px}
+.card .t{display:block;color:var(--head);margin-top:10px;font-weight:600;line-height:1.3}
+.card .y{display:block;font-size:.82rem;color:var(--muted)}
+aside .box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:22px}
+aside h3{margin:0 0 14px;font-size:1rem;font-weight:700;letter-spacing:.1em;color:var(--head);border-bottom:1px solid var(--line);padding-bottom:12px}
+.cat{display:block;width:100%;text-align:left;background:var(--panel2);color:var(--text);border:1px solid transparent;border-radius:4px;padding:9px 14px;margin-bottom:8px;cursor:pointer;letter-spacing:.05em;font-size:.88rem}
+.cat.on,.cat:hover{background:var(--btn);color:#fff}
+.top{all:unset;display:flex;gap:12px;align-items:center;cursor:pointer;margin-bottom:12px;width:100%}
+.top:focus-visible{outline:3px solid var(--ice)}
+.top i{font-style:normal;font-family:Cinzel,Georgia,serif;font-weight:700;border:1px solid var(--ice);color:var(--ice);border-radius:2px;width:26px;height:26px;display:grid;place-items:center;flex:none;font-size:.82rem}
+.top span{font-size:.95rem}
+.muted{color:var(--muted)}
+.player{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:20px}
+.stage{position:relative;aspect-ratio:16/9;background:#000;border:2px solid var(--btn);border-radius:6px;overflow:hidden;box-shadow:0 0 40px -6px var(--btn)}
+.stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.shield{position:absolute;top:0;right:0;width:84px;height:64px;z-index:2}
+.msg{display:grid;place-items:center;height:100%;color:#fff;text-align:center;padding:20px}
+.btns{display:flex;justify-content:center;gap:10px;margin:14px 0}
+.btn{background:var(--btn);color:#fff;border:0;border-radius:3px;padding:10px 20px;font-weight:700;font-size:.82rem;letter-spacing:.1em;cursor:pointer}
+.btn:hover:not(:disabled){filter:brightness(1.15)}
+.btn:disabled{opacity:.45;cursor:default}
+.player h1{font-size:1.6rem;letter-spacing:.04em;margin:10px 0 6px}
+.meta{display:flex;align-items:center;gap:22px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:16px;padding-top:16px}
+.ring{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-family:Cinzel,Georgia,serif;font-weight:700;font-size:.8rem;border:2px solid var(--ice);color:var(--ice)}
+.stars button{background:none;border:0;font-size:1.6rem;line-height:1;color:var(--line);cursor:pointer;padding:0 2px}
+.stars button.f{color:var(--star)}
+.stars button:disabled{cursor:default}
+.note{font-size:.88rem;color:var(--muted)}
+.comments h2{text-align:center;font-weight:700;letter-spacing:.1em;font-size:1.4rem;margin:34px 0 12px}
+.compose{display:flex;flex-direction:column;gap:10px;margin:0 auto 20px;max-width:760px}
+.compose textarea{width:100%;min-height:80px;border-radius:4px;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:12px;font:inherit;resize:vertical;-webkit-user-select:text;user-select:text}
+.login{text-align:center;color:var(--ice);font-weight:600;margin:0 0 20px;text-decoration:underline}
+.cm{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;margin-bottom:12px;-webkit-user-select:text;user-select:text}
+.cm b{color:var(--ice);font-family:Cinzel,Georgia,serif;letter-spacing:.04em}
+.cm p{margin:4px 0 6px;white-space:pre-wrap;overflow-wrap:anywhere}
+.cm small{color:var(--muted)}
+.cm .del{background:none;border:0;color:var(--crimson);cursor:pointer;margin-left:10px;font-size:.8rem;text-decoration:underline}
+.stage:fullscreen{width:100vw;height:100vh;aspect-ratio:auto;border:0;border-radius:0;box-shadow:none}
+.stage.full{position:fixed;inset:0;z-index:100;aspect-ratio:auto;border:0;border-radius:0;box-shadow:none}
+.exit{display:none;position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:12px;z-index:5}
+.stage.full .exit{display:block}
+.nick{width:100%;border-radius:4px;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:10px 12px;font:inherit;-webkit-user-select:text;user-select:text}
+.nick:focus-visible,.compose textarea:focus-visible{outline:3px solid var(--ice)}
+</style>
+</head>
+<body>
+<div id="smoke" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="wrap">
+  <header>
+    <a class="logo" href="https://vako.site" target="_top" rel="noopener">VAKO</a>
+    <div id="patron-bar" style="margin-left:auto;display:flex;align-items:center;gap:12px;font-family:Cinzel,serif;font-size:.8rem">
+      <span id="patron-status"></span>
+      <button id="patron-btn" type="button" class="btn" style="padding:6px 16px;font-size:.75rem"></button>
+    </div>
+  </header>
+  <div id="app"></div>
+</div>
+
+<script>
+/* ============ AQUÍ AGREGAS TUS VIDEOS ============ */
+// link: enlace para NO suscriptores (baja calidad)
+// linkHD: enlace para suscriptores de Patreon (1080p)
+const VIDEOS = [
+  {
+    id:"e1",
+    title:"Edición 1",
+    desc:"Escribe aquí de qué trata este video.",
+    year:2026,
+    dur:"3m",
+    cat:"Edits",
+    link:"https://drive.google.com/file/d/1jxT1E4ABzJ3J2oV26l_zmM8YdaBkNTMY/view?usp=sharing",
+    linkHD:"https://drive.google.com/file/d/1jxT1E4ABzJ3J2oV26l_zmM8YdaBkNTMY/view?usp=sharing"
+  }
+];
+/* ================================================= */
+
+const PATREON_CLIENT_ID = "s-VfF2tKFeH0wSvYxC7gjlzgoZAbNQdXB56eyIFSJE5HKcq8NDi7akPEK8Z-q8nQ";
+const PATREON_REDIRECT = encodeURIComponent(window.location.origin + "/api/callback");
+
+// Leer estado de Patreon desde URL o localStorage
+function getPatronStatus(){
+  const p = new URLSearchParams(location.search);
+  if(p.has("patron")){
+    localStorage.setItem("vako_patron", p.get("patron"));
+    // Limpiar URL
+    window.history.replaceState({}, "", "/");
+  }
+  return localStorage.getItem("vako_patron") === "1";
+}
+const isPatron = getPatronStatus();
+
+const COLORS=["#3a1d6e","#6b0f26","#1a2f4a","#4a2250","#22284a"];
+const appEl=document.getElementById("app");
+let allVotes={},comments=[],current=null,myDraft="",myNick="";
+let db=null;
+
+/* ID anónimo por navegador */
+function getUid(){
+  try{
+    let id=localStorage.getItem("vako_uid");
+    if(!id){id=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("vako_uid",id)}
+    myNick=localStorage.getItem("vako_nick")||"";
+    return id;
+  }catch(e){return "anon_"+Math.random().toString(36).slice(2)}
+}
+const uid=getUid();
+
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function driveId(u){const m=String(u).match(/\/d\/([\w-]+)/)||String(u).match(/[?&]id=([\w-]+)/);return m?m[1]:null}
+function stats(id){let s=0,n=0;for(const k in allVotes){const v=allVotes[k]&&allVotes[k][id];if(v){s+=v;n++}}return{avg:n?s/n:0,n}}
+function fmt(n){return n.toFixed(1).replace(".",",")}
+
+function renderVideo(v){
+  current=v;appEl.textContent="";
+  const lay=el("div","layout");const main=el("div");
+  const pl=el("div","player");
+  const st=el("div","stage");const id=driveId(isPatron && v.linkHD ? v.linkHD : v.link);
+  if(!id||id==="TU_ID_AQUI"){st.appendChild(el("div","msg","Este video aún no tiene un enlace de Drive válido."))}
+  else{
+    const f=document.createElement("iframe");
+    f.src="https://drive.google.com/file/d/"+id+"/preview";
+    f.allow="autoplay; fullscreen";f.allowFullscreen=true;
+    st.appendChild(f);st.appendChild(el("div","shield"));
+  }
+  const ex=el("button","btn exit","Salir");ex.type="button";ex.addEventListener("click",()=>exitFull(st));st.appendChild(ex);
+  pl.appendChild(st);
+  const bt=el("div","btns");
+  const fb2=el("button","btn","Pantalla completa");fb2.type="button";fb2.addEventListener("click",()=>goFull(st));
+  bt.appendChild(fb2);pl.appendChild(bt);
+  pl.appendChild(el("h1",null,v.title));
+  pl.appendChild(el("p",null,v.desc));
+  const meta=el("div","meta");meta.id="meta";pl.appendChild(meta);
+  main.appendChild(pl);
+  const cm=el("section","comments");cm.id="cm";main.appendChild(cm);
+  lay.appendChild(main);appEl.appendChild(lay);
+  updateMeta();renderCommentForm();window.scrollTo(0,0);
+}
+
+function updateMeta(){
+  const m=document.getElementById("meta");if(!m||!current)return;m.textContent="";
+  const s=stats(current.id);
+  m.appendChild(el("div","ring",s.n?Math.round(s.avg/5*100)+"%":"–"));
+  const box=el("div");
+  const stars=el("div","stars");
+  const myVote=(allVotes[uid]||{})[current.id]||0;
+  const avg=Math.round(s.avg);
+  for(let k=1;k<=5;k++){
+    const b=el("button",(k<=(myVote||avg)?"f":""),"★");b.type="button";
+    b.setAttribute("aria-label",k+" de 5");
+    b.addEventListener("click",()=>vote(k));
+    stars.appendChild(b);
+  }
+  box.appendChild(stars);
+  box.appendChild(el("div","note",s.n?"("+s.n+(s.n===1?" voto":" votos")+", promedio: "+fmt(s.avg)+" de 5)":"Aún no hay votos"));
+  m.appendChild(box);
+  m.appendChild(el("span","note","Duración "+current.dur+"  ·  Año "+current.year));
+}
+
+async function vote(n){
+  if(!current)return;
+  const mine=Object.assign({},allVotes[uid]||{});mine[current.id]=n;
+  allVotes[uid]=mine;
+  updateMeta();
+  if(db){
+    try{await db.collection("votes").doc(uid).set({r:mine})}catch(e){console.error(e)}
+  }
+}
+
+function renderCommentForm(){
+  const box=document.getElementById("cm");if(!box||!current)return;
+  box.textContent="";
+  box.appendChild(el("h2",null,"Comentarios"));
+  if(!db){
+    box.appendChild(el("p","muted","Los comentarios funcionan cuando la página está en línea.")).style.textAlign="center";
+    return;
+  }
+  const f=el("div","compose");
+  const ni=document.createElement("input");ni.className="nick";ni.maxLength=24;
+  ni.placeholder="Tu nombre";ni.value=myNick;ni.setAttribute("aria-label","Nombre");
+  ni.addEventListener("input",()=>{myNick=ni.value;try{localStorage.setItem("vako_nick",myNick)}catch(e){}});
+  const ta=document.createElement("textarea");
+  ta.maxLength=500;ta.placeholder="Escribe tu comentario…";ta.value=myDraft;
+  ta.addEventListener("input",()=>{myDraft=ta.value});
+  const b=el("button","btn","Publicar");b.type="button";b.style.alignSelf="flex-end";
+  b.addEventListener("click",async()=>{
+    const t=ta.value.trim(),nk=ni.value.trim().replace(/\s+/g," ");
+    if(nk.length<2){ni.focus();ni.placeholder="Escribe un nombre (mínimo 2 letras)";return}
+    if(!t)return;b.disabled=true;
+    try{
+      await db.collection("comments").add({vid:current.id,uid,nick:nk,text:t,ts:Date.now()});
+      myNick=nk;myDraft="";ta.value="";
+      try{localStorage.setItem("vako_nick",nk)}catch(e){}
+    }catch(e){alert("No se pudo publicar el comentario.")}
+    b.disabled=false;
+  });
+  f.appendChild(ni);f.appendChild(ta);f.appendChild(b);
+  box.appendChild(f);
+  const list=el("div");list.id="cmlist";box.appendChild(list);
+  renderCommentList();
+}
+
+function renderCommentList(){
+  const list=document.getElementById("cmlist");if(!list||!current)return;
+  list.textContent="";
+  const vid=current.id;
+  const filtered=comments.filter(c=>c.vid===vid);
+  if(!filtered.length){const p=el("p","muted","Sé el primero en comentar.");p.style.textAlign="center";list.appendChild(p);return}
+  filtered.forEach(c=>{
+    const d=el("div","cm");
+    d.appendChild(el("b",null,c.nick||"Anónimo"));
+    d.appendChild(el("p",null,String(c.text||"")));
+    const sm=el("small",null,new Date(c.ts).toLocaleString("es-MX"));
+    if(c.uid===uid){
+      const x=el("button","del","Borrar");x.type="button";
+      x.addEventListener("click",async()=>{
+        if(db){try{await db.collection("comments").doc(c.id).delete()}catch(e){}}
+      });
+      sm.appendChild(x);
+    }
+    d.appendChild(sm);
+    list.appendChild(d);
+  });
+}
+
+async function goFull(st){
+  try{
+    if(st.requestFullscreen){await st.requestFullscreen();return}
+    if(st.webkitRequestFullscreen){st.webkitRequestFullscreen();return}
+  }catch(e){}
+  st.classList.add("full");document.body.style.overflow="hidden";
+}
+function exitFull(st){st.classList.remove("full");document.body.style.overflow=""}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){const s=document.querySelector(".stage.full");if(s)exitFull(s)}});
+
+document.addEventListener("contextmenu",e=>{if(!e.target.closest("textarea,input"))e.preventDefault()});
+document.addEventListener("dragstart",e=>e.preventDefault());
+document.addEventListener("keydown",e=>{const k=e.key.toLowerCase();if((e.ctrlKey||e.metaKey)&&["s","u","p"].includes(k))e.preventDefault();if(e.key==="F12")e.preventDefault()});
+
+(function(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const s=document.createElement("div");s.id="snow";s.setAttribute("aria-hidden","true");
+  for(let i=0;i<28;i++){const f=document.createElement("i"),z=2+Math.random()*4;
+    f.style.cssText="left:"+Math.random()*100+"%;width:"+z+"px;height:"+z+"px;animation-duration:"+(14+Math.random()*16)+"s;animation-delay:-"+Math.random()*20+"s;opacity:"+(.2+Math.random()*.4);
+    s.appendChild(f)}
+  document.body.prepend(s);
+})();
+
+/* Patreon login/logout */
+(function(){
+  const btn = document.getElementById("patron-btn");
+  const status = document.getElementById("patron-status");
+  if(isPatron){
+    status.textContent = "✓ Suscriptor";
+    status.style.color = "#f47c2b";
+    btn.textContent = "Cerrar sesión";
+    btn.addEventListener("click", ()=>{
+      localStorage.removeItem("vako_patron");
+      location.reload();
+    });
+  } else {
+    status.textContent = "Ver en 1080p";
+    status.style.color = "var(--ice)";
+    btn.textContent = "Conectar Patreon";
+    btn.addEventListener("click", ()=>{
+      const url = "https://www.patreon.com/oauth2/authorize?response_type=code&client_id="
+        + PATREON_CLIENT_ID + "&redirect_uri=" + PATREON_REDIRECT + "&scope=identity%20identity.memberships";
+      window.location.href = url;
+    });
+  }
+})();
+
+/* Arrancar la página primero, luego cargar Firebase dinámicamente */
+renderVideo(VIDEOS[0]);
+
+(function loadFirebase(){
+  function inject(src, cb){
+    const s=document.createElement("script");s.src=src;s.onload=cb;s.onerror=()=>{};document.head.appendChild(s);
+  }
+  inject("https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js",function(){
+    inject("https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js",function(){
+      try{
+        if(!window.firebase){return}
+        firebase.initializeApp({
+          apiKey:"AIzaSyBjevNkCcO634gZTpaA0564chMdsL10tR0",
+          authDomain:"vakosite-740e4.firebaseapp.com",
+          projectId:"vakosite-740e4",
+          storageBucket:"vakosite-740e4.firebasestorage.app",
+          messagingSenderId:"978355141837",
+          appId:"1:978355141837:web:e24d7ca6adb5c26bc2fd84"
+        });
+        db=firebase.firestore();
+
+        db.collection("votes").onSnapshot(function(snap){
+          allVotes={};
+          snap.forEach(function(d){allVotes[d.id]=(d.data()||{}).r||{}});
+          updateMeta();
+        });
+
+        db.collection("comments").orderBy("ts","desc").limit(300).onSnapshot(function(snap){
+          comments=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
+          renderCommentList();
+        });
+
+        /* Mostrar formulario de comentarios ahora que Firebase está listo */
+        renderCommentForm();
+      }catch(e){console.warn("Firebase no disponible:",e)}
+    });
+  });
+})();
+</script>
+</body>
+</html>
