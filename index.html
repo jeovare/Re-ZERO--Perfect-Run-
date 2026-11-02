@@ -128,20 +128,7 @@ const VIDEOS = [
 ];
 /* ================================================= */
 
-const PATREON_CLIENT_ID = "s-VfF2tKFeH0wSvYxC7gjlzgoZAbNQdXB56eyIFSJE5HKcq8NDi7akPEK8Z-q8nQ";
-const PATREON_REDIRECT = encodeURIComponent(window.location.origin + "/api/callback");
-
-// Leer estado de Patreon desde URL o localStorage
-function getPatronStatus(){
-  const p = new URLSearchParams(location.search);
-  if(p.has("patron")){
-    localStorage.setItem("vako_patron", p.get("patron"));
-    // Limpiar URL
-    window.history.replaceState({}, "", "/");
-  }
-  return localStorage.getItem("vako_patron") === "1";
-}
-const isPatron = getPatronStatus();
+const isPatron = false;
 
 const COLORS=["#3a1d6e","#6b0f26","#1a2f4a","#4a2250","#22284a"];
 const appEl=document.getElementById("app");
@@ -299,28 +286,16 @@ document.addEventListener("keydown",e=>{const k=e.key.toLowerCase();if((e.ctrlKe
   document.body.prepend(s);
 })();
 
-/* Patreon login/logout */
+/* Botón Patreon simple */
 (function(){
   const btn = document.getElementById("patron-btn");
   const status = document.getElementById("patron-status");
-  if(isPatron){
-    status.textContent = "✓ Suscriptor";
-    status.style.color = "#f47c2b";
-    btn.textContent = "Cerrar sesión";
-    btn.addEventListener("click", ()=>{
-      localStorage.removeItem("vako_patron");
-      location.reload();
-    });
-  } else {
-    status.textContent = "Ver en 1080p";
-    status.style.color = "var(--ice)";
-    btn.textContent = "Conectar Patreon";
-    btn.addEventListener("click", ()=>{
-      const url = "https://www.patreon.com/oauth2/authorize?response_type=code&client_id="
-        + PATREON_CLIENT_ID + "&redirect_uri=" + PATREON_REDIRECT + "&scope=identity%20identity.memberships";
-      window.location.href = url;
-    });
-  }
+  status.textContent = "Apóyame en Patreon";
+  status.style.color = "#f47c2b";
+  btn.textContent = "Suscríbete";
+  btn.addEventListener("click", ()=>{
+    window.open("https://www.patreon.com/cw/GMkerepot", "_blank");
+  });
 })();
 
 /* Arrancar la página primero, luego cargar Firebase dinámicamente */
