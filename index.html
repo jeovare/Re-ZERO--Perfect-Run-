@@ -117,10 +117,10 @@ aside h3{margin:0 0 14px;font-size:1rem;font-weight:700;letter-spacing:.1em;colo
 const VIDEOS = [
   {
     id:"e1",
-    title:"Edición 1",
-    desc:"Escribe aquí de qué trata este video.",
+    title:"Re:ZERO Perfect Run",
+    desc:"Hola, espero les guste este proyecto. Lo tenía pensado desde hace mucho pero apenas este mes me animé a hacerlo. Ya tengo la segunda temporada con los cortes pero me falta limpiar lo último, espero terminarlo esta semana. ¿Qué cambios hice? Corté todo lo relacionado con el regreso de la muerte, tanto recuerdos como menciones, y las partes que no se pueden cortar las veremos como manchas. Espero les guste. Algunos cortes quedaron raros ya que este anime no fue pensado para esto.\n\nEl video en 1080p tiene un tamaño considerable y para poder alojarlo tengo que pagar por el almacenamiento. Si desean apoyar el proyecto pueden visitar mi Patreon, cualquier ayuda es muy apreciada. Además estaremos subiendo avances de las demás temporadas.",
     year:2026,
-    dur:"3m",
+    dur:"5h 36m",
     cat:"Edits",
     link:"https://drive.google.com/file/d/1jxT1E4ABzJ3J2oV26l_zmM8YdaBkNTMY/view?usp=sharing",
     linkHD:"https://drive.google.com/file/d/1jxT1E4ABzJ3J2oV26l_zmM8YdaBkNTMY/view?usp=sharing"
@@ -169,7 +169,7 @@ function renderVideo(v){
   const fb2=el("button","btn","Pantalla completa");fb2.type="button";fb2.addEventListener("click",()=>goFull(st));
   bt.appendChild(fb2);pl.appendChild(bt);
   pl.appendChild(el("h1",null,v.title));
-  pl.appendChild(el("p",null,v.desc));
+  v.desc.split("\n\n").forEach(t=>{pl.appendChild(el("p",null,t))});
   const meta=el("div","meta");meta.id="meta";pl.appendChild(meta);
   main.appendChild(pl);
   const cm=el("section","comments");cm.id="cm";main.appendChild(cm);
@@ -290,9 +290,8 @@ document.addEventListener("keydown",e=>{const k=e.key.toLowerCase();if((e.ctrlKe
 (function(){
   const btn = document.getElementById("patron-btn");
   const status = document.getElementById("patron-status");
-  status.textContent = "Apóyame en Patreon";
-  status.style.color = "#f47c2b";
-  btn.textContent = "Suscríbete";
+  status.style.display = "none";
+  btn.textContent = "Ver en 1080p en Patreon";
   btn.addEventListener("click", ()=>{
     window.open("https://www.patreon.com/cw/GMkerepot", "_blank");
   });
