@@ -220,7 +220,7 @@ function renderCommentForm(){
   box.textContent="";
   box.appendChild(el("h2",null,"Comentarios"));
   if(!db){
-    box.appendChild(el("p","muted","Los comentarios funcionan cuando la página está en línea.")).style.textAlign="center";
+    const p=el("p","muted","Los comentarios estarán disponibles próximamente.");p.style.textAlign="center";box.appendChild(p);
     return;
   }
   const f=el("div","compose");
@@ -308,41 +308,7 @@ document.addEventListener("keydown",e=>{const k=e.key.toLowerCase();if((e.ctrlKe
 /* Arrancar la página primero, luego cargar Firebase dinámicamente */
 renderVideo(VIDEOS[0]);
 
-(function loadFirebase(){
-  function inject(src, cb){
-    const s=document.createElement("script");s.src=src;s.onload=cb;s.onerror=()=>{};document.head.appendChild(s);
-  }
-  inject("https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js",function(){
-    inject("https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js",function(){
-      try{
-        if(!window.firebase){return}
-        firebase.initializeApp({
-          apiKey:"AIzaSyBjevNkCcO634gZTpaA0564chMdsL10tR0",
-          authDomain:"vakosite-740e4.firebaseapp.com",
-          projectId:"vakosite-740e4",
-          storageBucket:"vakosite-740e4.firebasestorage.app",
-          messagingSenderId:"978355141837",
-          appId:"1:978355141837:web:e24d7ca6adb5c26bc2fd84"
-        });
-        db=firebase.firestore();
-
-        db.collection("votes").onSnapshot(function(snap){
-          allVotes={};
-          snap.forEach(function(d){allVotes[d.id]=(d.data()||{}).r||{}});
-          updateMeta();
-        });
-
-        db.collection("comments").orderBy("ts","desc").limit(300).onSnapshot(function(snap){
-          comments=snap.docs.map(function(d){return Object.assign({id:d.id},d.data())});
-          renderCommentList();
-        });
-
-        /* Mostrar formulario de comentarios ahora que Firebase está listo */
-        renderCommentForm();
-      }catch(e){console.warn("Firebase no disponible:",e)}
-    });
-  });
-})();
+/* Firebase desactivado temporalmente */
 </script>
 </body>
 </html>
